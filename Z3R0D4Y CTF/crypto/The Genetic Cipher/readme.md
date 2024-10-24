@@ -11,5 +11,7 @@ As you embark on this challenge, you must employ your cryptographic skills to de
 Your mission is clear:
 
 1-Decode the DNA Sequence: Use your knowledge of genetic encoding to transform the cipher-text into a readable message.
+
 2-Uncover the Hidden Clues: Pay attention to patterns, keywords, and anomalies that may give insights into The Alphabetical Order's next moves.
+
 3- Save Humanity: The fate of the world may rest on your ability to decipher this message before it’s too late!
