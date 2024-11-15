@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Crypto Vault</title>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
+        <style>
+            body {
+                font-family: "Roboto", sans-serif;
+                background-color: #f4f6f9;
+                color: #333;
+                text-align: center;
+                margin-top: 50px;
+            }
+            h1 {
+                font-size: 2.5rem;
+                margin-bottom: 20px;
+                color: #444;
+            }
+            input,
+            button {
+                margin: 15px auto;
+                padding: 12px 20px;
+                font-size: 1.2rem;
+                border-radius: 8px;
+                width: 80%;
+                max-width: 400px;
+                border: 1px solid #ddd;
+            }
+            button {
+                background-color: #28a745;
+                color: white;
+                border: none;
+                font-weight: bold;
+            }
+            button:hover {
+                background-color: #218838;
+                cursor: pointer;
+            }
+            #keyList {
+                display: none;
+                margin-top: 30px;
+                padding: 15px;
+                background-color: #fff;
+                border-radius: 8px;
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+                color: #444;
+                max-width: 600px;
+                margin: 20px auto;
+                word-wrap: break-word;
+                overflow-wrap: break-word;
+            }
+            p {
+                font-size: 1.1rem;
+            }
+            #message {
+                font-weight: bold;
+            }
+            .copyable-input {
+                border: none;
+                background-color: transparent;
+                text-align: center;
+                width: 100%;
+                overflow: hidden;
+                white-space: nowrap;
+                text-overflow: ellipsis;
+            }
+            .copyable-input:focus {
+                outline: none;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <img src="img/logo.png" alt="Crypto Vault Logo" class="img-fluid" style="max-width: 150px; margin-bottom: 20px" />
+            <h1>Crypto Vault</h1>
+            <p>Cold Storage for your Crypto Keys</p>
+
+            <input id="pin" type="password" class="form-control" placeholder="Enter your PIN" />
+            <button class="btn btn-success" onclick="unlockVault()">Unlock Vault</button>
+
+            <div id="keyList">
+                <label for="encryptedKey">Encrypted Key:</label>
+                <input type="text" id="encryptedKey" class="copyable-input" readonly />
+                <button class="btn btn-secondary" onclick="copyKey()">Copy Key</button>
+            </div>
+            <p id="message"></p>
+        </div>
+
+        <script type="text/javascript" src="cordova.js"></script>
+        <script src="js/keygen.js"></script>
+
+        <script>
+            function unlockVault() {
+                var pin = document.getElementById("pin").value.trim();
+                if (pin === "7331") {
+                    document.getElementById("message").innerText = "Correct PIN!";
+                    document.getElementById("message").style.color = "green";
+                    document.getElementById("keyList").style.display = "block";
+                    retrieveencryptedKey();
+                } else {
+                    document.getElementById("message").innerText = "Invalid PIN!";
+                    document.getElementById("message").style.color = "red";
+                    document.getElementById("keyList").style.display = "none";
+                }
+            }
+
+            function retrieveencryptedKey() {
+                var keyInput = document.getElementById("encryptedKey");
+                var encryptedKey = keygen();
+                keyInput.value = encryptedKey;
+                document.getElementById("message").innerText = "Please use your standalone decryption device to complete the recovery!";
+                document.getElementById("message").style.color = "blue";
+            }
+
+            function copyKey() {
+                var keyInput = document.getElementById("encryptedKey");
+
+                keyInput.select();
+                keyInput.setSelectionRange(0, 99999);
+
+                try {
+                    navigator.clipboard
+                        .writeText(keyInput.value)
+                        .then(function () {
+                            alert("Encrypted Key copied to clipboard!");
+                        })
+                        .catch(function () {
+                            if (document.execCommand("copy")) {
+                                alert("Encrypted Key copied to clipboard!");
+                            } else {
+                                alert("Failed to copy the encrypted key.");
+                            }
+                        });
+                } catch (err) {
+                    if (document.execCommand("copy")) {
+                        alert("Encrypted Key copied to clipboard!");
+                    } else {
+                        alert("Failed to copy the encrypted key.");
+                    }
+                }
+            }
+        </script>
+    </body>
+</html>
