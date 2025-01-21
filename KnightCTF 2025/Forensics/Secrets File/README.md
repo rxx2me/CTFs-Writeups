@@ -17,7 +17,7 @@ password : pmsiam
 
 Download file : 
 
-1
+![image]()
 
 we have file : kali-linux-2024.ova
 
