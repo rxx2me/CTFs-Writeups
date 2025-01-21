@@ -1,5 +1,7 @@
 Name : 
 
+Secrets File
+
 Des : 
 
 
@@ -17,7 +19,7 @@ password : pmsiam
 
 Download file : 
 
-![image]()
+![image](https://github.com/rxx2me/CTFs-Writeups/blob/main/KnightCTF%202025/Forensics/Secrets%20File/1.png?raw=true)
 
 we have file : kali-linux-2024.ova
 
@@ -26,7 +28,7 @@ but we dont have any "sudo Privilege"
 
 So I changed the root password using GRUB 
 
-2
+![image](https://github.com/rxx2me/CTFs-Writeups/blob/main/KnightCTF%202025/Forensics/Secrets%20File/2.png?raw=true)
 
 ```
 linux /boot/vmlinuz-6.11.2-amd64 root=UUID=... ro quiet splash init=/bin/bash
@@ -42,33 +44,33 @@ $ exec /sbin/init
 Ok .. Login with " root " 
 and find 6 users 
 
-3 
+![image](https://github.com/rxx2me/CTFs-Writeups/blob/main/KnightCTF%202025/Forensics/Secrets%20File/3.png?raw=true) 
 
 we find 2 file in "/home/bob/Downloads"
 
-4
+![image](https://github.com/rxx2me/CTFs-Writeups/blob/main/KnightCTF%202025/Forensics/Secrets%20File/4.png?raw=true)
 
 
-5
+![image](https://github.com/rxx2me/CTFs-Writeups/blob/main/KnightCTF%202025/Forensics/Secrets%20File/5.png?raw=true)
 
 
 
 ok we found : PartialPass: Null_
 
-6
+![image](https://github.com/rxx2me/CTFs-Writeups/blob/main/KnightCTF%202025/Forensics/Secrets%20File/6.png?raw=true)
 
 and try to unzip it : 
 
-7
+![image](https://github.com/rxx2me/CTFs-Writeups/blob/main/KnightCTF%202025/Forensics/Secrets%20File/7.png?raw=true)
 
 Ok Find Full password : Null_V4luE_M3
 
-8
+![image](https://github.com/rxx2me/CTFs-Writeups/blob/main/KnightCTF%202025/Forensics/Secrets%20File/8.png?raw=true)
 
 
-9
+![image](https://github.com/rxx2me/CTFs-Writeups/blob/main/KnightCTF%202025/Forensics/Secrets%20File/9.png?raw=true)
 
-
+Done 
 
 
 
