@@ -41,7 +41,7 @@
 
 انسخ هذا المقطع كما هو (محاطًا بثلاث علامات اقتباس مزدوجة) إلى ملف باسم solve.py:
 
-"""
+```
 import re
 import sys
 from pathlib import Path
@@ -81,7 +81,7 @@ def main():
 
 if __name__ == "__main__":
     main()
-"""
+```
 
 ---
 
