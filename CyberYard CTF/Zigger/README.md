@@ -1,7 +1,8 @@
 ---
-title: "CyberYard CTF — Reversing — Zigger"
-ctf: CyberYard
-track: Reversing   
+title: "Zigger"
+ctf: cyberyard-ctf   
+track: Reversing           
+layout: page        
 ---
 
 # Zigger — Reversing (Zig)
