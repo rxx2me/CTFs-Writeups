@@ -1,3 +1,9 @@
+---
+title: "CyberYard CTF — Reversing — Zigger"
+ctf: CyberYard
+track: Reversing   
+---
+
 # Zigger — Reversing (Zig)
 
 **النوع:** Reversing  
