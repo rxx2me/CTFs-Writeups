@@ -10,9 +10,12 @@ tags: [ctf, cyberyard, Reversing]
 
 # Zigger — Reversing (Zig)
 
-**النوع:** Reversing  
-**الوصف:** Zig to recover the hidden flag  
+**النوع:** Reversing
+
+**الوصف:** Zig to recover the hidden flag
+
 **الملف المعطى:** [challenge.zig](https://raw.githubusercontent.com/rxx2me/CTFs-Writeups/refs/heads/main/CyberYard%20CTF/Zigger/challenge.zig)
+
 **النتيجة:** FlagY{d079b852___________________}
 
 ---
