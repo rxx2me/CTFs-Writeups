@@ -1,3 +1,14 @@
+---
+title: "Save Files are Fun — Write-up"
+ctf: BlackHat-MEA-CTF-Final-2024    
+track: Reversing           
+layout: page
+permalink: /ctf/BlackHat-MEA-CTF-Final-2024/Reversing/save-files-are-fun/
+date: 2024-11-30 12:00:00 +0300
+tags: [ctf, blackhat, Reversing]
+---
+
+
 Save Files are Fun
 
 The file is : map.wbox its belong to " WorldBox.God.Simulator"
@@ -29,4 +40,13 @@ C:\Users\(username)\AppData\LocalLow\mkarpenko\WorldBox\saves\save1
 
 
 
+
+{% if page.tags and page.tags != empty %}
+<hr>
+<div class="tags-inline">
+  {% for tag in page.tags %}
+    <a class="tag-pill" href="/tags/?t={{ tag | slugify }}">{{ tag }}</a>
+  {% endfor %}
+</div>
+{% endif %}
 
