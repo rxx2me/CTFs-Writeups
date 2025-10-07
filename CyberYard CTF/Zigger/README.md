@@ -5,6 +5,7 @@ track: Reversing
 layout: page
 permalink: /ctf/cyberyard-ctf/web/zigger/
 date: 2025-10-06 12:00:00 +0300
+tags: [ctf, cyberyard, Reversing]
 ---
 
 # Zigger — Reversing (Zig)
