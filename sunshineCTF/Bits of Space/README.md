@@ -1,83 +1,83 @@
+---
+title: "Bits of Space — Write-up"
+ctf: sunshineCTF    
+track: Crypto           
+layout: page
+permalink: /ctf/sunshineCTF-2025/Crypto/Bits-of-Space
+date: 2025-09-28 12:00:00 +0300
+tags: [ctf, sunshinectf, Crypto]
+---
 
 # Bits of Space — writeup
-*(GitHub-style — focused on Challenge 1 only)*
 
 ---
 
-## TL;DR
-This challenge was a classic **CBC malleability / padding-oracle → IV forgery** problem.
-We used a padding-oracle to recover plaintext blocks, then *modified the IV* so that after AES-CBC decryption the first plaintext block contained an allowed device id. Sending the forged packet produced the flag:
+## الخلاصة
+كان هذا التحدّي مثالًا كلاسيكيًا على مشكلة **قابليّة العبث في CBC / هجوم padding-oracle وصولًا إلى تزوير IV**. استخدمنا padding-oracle لاستخراج كتل النصّ الصريح، ثم **عدّلنا IV** بحيث يصبح أوّل بلوك بعد فك تشفير AES-CBC يحتوي على معرّف جهاز مُجاز. إرسال الحزمة المزوّرة أعطى العلم (Flag).
 
 ---
 
-## Challenge summary
-- Service: `nc sunshinectf.games 25401`
-- Goal: get access to a restricted relay; the server gives you an encrypted packet and checks device identity after decrypting.
-- Provided files (in the contest environment): an encrypted file (e.g. `voyager.bin`) and some helper scripts (padding-oracle client).
-- Vulnerability: AES-CBC without authenticity (no MAC) — attacker can:
-  1. use a padding oracle to decrypt ciphertext blocks, and
-  2. flip bits in the IV (or previous ciphertext block) to control the decrypted plaintext.
+## ملخّص التحدّي
+- **الخدمة:** `nc sunshinectf.games 25401`
+- **الهدف:** الوصول إلى  (relay) مقيّد؛ الخادم يزوّدك بحزمة مُشفّرة ثم يفحص هوية الجهاز بعد فك التشفير.
+- **الملفّات المتاحة :** ملف مُشفّر ([`voyager.bin` ⬇️](https://github.com/rxx2me/CTFs-Writeups/raw/refs/heads/main/sunshineCTF/Bits%20of%20Space/voyager.bin)) و ([`relay.py` ⬇️](https://raw.githubusercontent.com/rxx2me/CTFs-Writeups/refs/heads/main/sunshineCTF/Bits%20of%20Space/relay.py)).
+- **الثغرة:** استخدام AES-CBC بدون توثيق ( MAC)، ما يسمح للمهاجم بـ:
+  1. استخدام padding-oracle لفكّ تشفير كتل النصّ.
+  2. قلب البتّات في **IV** (أو في الكتلة المشفّرة السابقة) للتحكّم بالنصّ المفكوك.
 
 ---
 
-## Key idea
-For AES-CBC:
-```
+## الفكرة الأساسية
+بالنسبة إلى AES-CBC:
 
-P1 = D(C1) XOR IV
+<pre><code>P1 = D(C1) XOR IV
+</code></pre>
 
-```
-If we want a different plaintext `P1'` after decryption, we can craft a new IV:
-```
+إذا أردنا نصًا مختلفًا بعد الفك `P1'`، يمكننا صناعة IV جديد:
 
-IV' = D(C1) XOR P1'
+<pre><code>IV' = D(C1) XOR P1'
+</code></pre>
 
-```
-We do not know `D(C1)` directly, but from a padding-oracle decryption we can recover `P1 = D(C1) XOR IV`. Rearranging:
+نحن لا نعرف `D(C1)` مباشرة، لكن من padding-oracle يمكننا استرجاع:
 
-```
+<pre><code>P1 = D(C1) XOR IV
+</code></pre>
 
-D(C1) = P1 XOR IV
+بإعادة الترتيب:
+
+<pre><code>D(C1) = P1 XOR IV
 IV' = (P1 XOR IV) XOR P1'  = IV XOR P1 XOR P1'
+</code></pre>
 
-````
-
-So once we recover the original plaintext `P1`, we can compute `IV'` to make the server see *any* `P1'` we like. In this challenge `P1'` was set to a valid device id (the example used `0x13371337` in the first 4 bytes), and that granted access.
+بمجرّد استعادة `P1`، نستطيع حساب `IV'` ليجعل الخادم يرى **أي** `P1'` نريده. في هذا التحدّي، جُعلت أوّل 4 بايتات من `P1'` تُطابق معرّف جهاز صحيح (المثال استخدم `0x13371337`) فتم منح الوصول.
 
 ---
 
-## Steps performed
+## الخطوات المنفَّذة
 
-### 1. Obtain packets and oracle
-- Connect to the challenge host and observe that the server accepts an encrypted packet and leaks whether decryption/auth succeeds.
-- The challenge provided a packet with IV and ciphertext blocks (call them `IV`, `C1`, `C2`, ...).
+### 1) الحصول على الحزم والـ oracle
+- نتصل بمضيف التحدّي ونلاحظ أن الخادم يقبل حزمة مُشفّرة ويُسرّب ما إذا نجح الفك/التحقّق.
+- الحزمة تحتوي على **IV** وكتل النصّ المشفّر (`IV`, `C1`, `C2`, ...).
 
-### 2. Use padding-oracle to recover plaintext blocks
-- Run a padding-oracle script (the challenge provided / or we used a typical `solve.py`) that:
-  - Iteratively modifies bytes of the previous block/IV,
-  - Queries the server and infers correct padding responses,
-  - Recovers `P1` and subsequent plaintext blocks.
+### 2) استخدام padding-oracle لاسترجاع كتل النصّ الصريح
+- تشغيل سكربت padding-oracle (مزوّد/أو سكربت شائع مثل `solve.py`) يقوم بـ:
+  - تعديل بايتات من الكتلة السابقة/IV تكراريًا،
+  - إرسال الاستعلام للخادم واستنتاج ردود صحة الحشو،
+  - استرجاع `P1` وبقية الكتل.
 
-Example (what I ran in the contest):
-```bash
-python solve.py --host sunshinectf.games --port 25401 --in voyager.bin
-````
+**مثال (الأمر الذي استُخدم في المسابقة):**
+<pre><code>python solve.py --host sunshinectf.games --port 25401 --in voyager.bin
+</code></pre>
 
-This produced the recovered plaintext blocks and the original IV / ciphertext displayed in hex.
+يُظهر السكربت **IV** والكتل بالهيكس، ويطبع النصّ الصريح المستعاد (هيكس خام). بعد الفك أصبح لدينا البلوك الذي يحتوي معرّف الجهاز.
 
-> The solver printed the IV and ciphertext blocks and showed recovered plaintext (raw hex).
-> After decryption we had the plaintext bytes for the block containing the device id.
+### 3) حساب IV مزوّر لتعيين معرّف الجهاز
+- نختار قيمة المعرّف المرغوبة — مثلًا `0x13371337` في أوّل 4 بايتات.
+- لِنسمِّ الأصل `IV` (16 بايت) والنصّ المستعاد للبلوك الأوّل `P1` (16 بايت).
+- نحسب `IV'` بحيث يرى الخادم `P1'` بأوّل 4 بايتات تساوي `0x13 0x37 0x13 0x37` (والباقي يمكن أن يبقى كما هو أو حسب المتطلّب).
 
-### 3. Compute forged IV to set device ID
-
-* Decide on the desired device id value we want the server to see — e.g. `0x13371337` in the first 4 bytes (as done during the solve).
-* Let `IV` be the original IV (16 bytes) and `P1` be the recovered first plaintext block (16 bytes).
-* Compute new IV `IV'` that will cause the server to see `P1'` where the first 4 bytes equal `0x13 0x37 0x13 0x37` (rest of block can be the original bytes or whatever is required).
-
-Small Python snippet used to compute the new IV (first-4-bytes example):
-
-```python
-# example values (replace with your actual hex strings)
+**مقتطف Python لحساب IV الجديد (تعديل أوّل 4 بايتات):**
+<pre><code># example values (replace with your actual hex strings)
 old_iv = bytes.fromhex("5e60383e8ebbee04aa00a3bead867ef9")
 p1     = bytes.fromhex("edf4f6a2fb241b9e21b4926b5134e3d2")  # recovered plaintext block
 desired_first4 = bytes.fromhex("13371337")  # want the first 4 bytes of plaintext to become this
@@ -88,74 +88,39 @@ for i in range(4):
     new_iv[i] = old_iv[i] ^ p1[i] ^ desired_first4[i]
 
 print("new IV (hex):", new_iv.hex())
-```
+</code></pre>
 
-(Equivalently, if you recovered the *entire* plaintext block you can replace the whole 16 bytes: `new_iv = bytes(a ^ b ^ c for a,b,c in zip(old_iv, p1, desired_plaintext_block))`.)
+(وبشكل مكافئ، إذا استعدت كامل البلوك، يمكنك استبدال الـ 16 بايت كاملة:)
+<pre><code>new_iv = bytes(a ^ b ^ c for a, b, c in zip(old_iv, p1, desired_plaintext_block))
+</code></pre>
 
-### 4. Build forged packet and send
+### 4) بناء الحزمة المزوّرة وإرسالها
+- نستبدل الـ **IV** الأصلي بـ `IV'` ونُبقي كتل النصّ المشفّر كما هي.
+- نرسل الحزمة إلى الخادم (في التحدّي استُخدم ملف `forged.bin` مع سكربت مساعد).
+- الخادم يفكّ باستخدام `IV'` فيرى `P1'` وفيه معرّف جهاز صالح → يمنح الوصول → يُرجع العلم.
 
-* Replace the IV in the original packet with `IV'` and keep the ciphertext blocks unchanged.
-* Send the forged packet to the server (the challenge used a `forged.bin` and `player.py` helper).
-* The server decrypts (with your `IV'`) and now sees `P1'` containing a valid device id → grants access → returns the flag.
-
-Example output after successful IV tweak:
-
-```
-You have reached the restricted relay... here you go.
+**مخرجات مثال بعد نجاح تعديل IV:**
+<pre><code>You have reached the restricted relay... here you go.
 b'sun{m4yb3_4_ch3ck5um_w0uld_b3_m0r3_53cur3}\n'
-```
+</code></pre>
 
 ---
 
-## Why this works
-
-* AES-CBC provides confidentiality but **no integrity**. Without a MAC (or AEAD), ciphertext (and IV) modifications lead to predictable changes in the decrypted plaintext.
-* Padding-oracle grants an attacker the ability to decrypt ciphertext blocks offline by repeatedly querying the server.
-* Combining both, attacker recovers plaintext and then crafts an `IV'` to set desired plaintext values (device id), bypassing any plaintext-based authentication checks.
-
----
-
-## Mitigations / fixes
-
-Server-side developers should **never** accept unauthenticated ciphertext. Fixes include:
-
-1. **Use authenticated encryption** — AES-GCM or ChaCha20-Poly1305 (AEAD) so modifications are detected.
-2. **Encrypt-then-MAC** (if using CBC) — compute a MAC (HMAC) over IV||ciphertext and verify before decryption.
-3. **Reject any decryption error details** — don’t reveal padding/format errors in a way that yields an oracle. (But this is only a partial defense; the fundamental fix is MAC/AEAD.)
-4. **Do not rely on unauthenticated decrypted fields for authentication** — authenticate the whole message with a MAC.
-5. **Include replay / freshness checks** as an extra defense (nonces/counters/timestamps), though not a replacement for integrity.
+## لماذا ينجح هذا؟
+- AES-CBC يمنح السرّية فقط، **بدون سلامة/تكامل**. تعديل النصّ المشفّر (أو IV) يُحدِث تغيّرات متوقَّعة في النصّ المفكوك.
+- padding-oracle يتيح عمليًا فكّ تشفير الكتل عبر استعلامات متكرّرة للخادم.
+- بدمج الاثنين، يستعيد المهاجم النصّ ثم يصنع `IV'` لضبط قيم نصّ معينة (مثل معرّف الجهاز) وتجاوز فحوصات تعتمد على النصّ.
 
 ---
 
-## Notes / lessons learned
-
-* Padding oracle attacks remain practical when services leak padding validity (or other decryption error behavior).
-* The simplest programmatic exploit is:
-
-  1. run padding-oracle to recover `P1`,
-  2. compute `IV' = IV XOR P1 XOR P1_desired`,
-  3. send IV' + ciphertext to obtain desired decrypted plaintext.
-* Always treat encryption as **confidentiality + integrity**. Without integrity the ciphertext stream is malleable.
+## العلم (Flag)
+<pre><code>sun{m4yb3_4_ch3ck5um_w0uld_b3_m0r3_53cur3}
+</code></pre>
 
 ---
 
-## Flag
-
-```
-sun{m4yb3_4_ch3ck5um_w0uld_b3_m0r3_53cur3}
-```
-
----
-
-## Appendix: references & helpful utilities
-
-* Typical padding-oracle implementations (many public PoC scripts) — look for `cbc padding oracle python` or `padding oracle attack`.
-* For one-liners, Python `pycryptodome` helps compute XORs and conversions.
-
-
-Full Code : 
-```
-#!/usr/bin/env python3
+## Full Code
+<pre><code>#!/usr/bin/env python3
 import socket
 from pathlib import Path
 
@@ -222,7 +187,14 @@ else:
     print("\nTried all 4 candidate origins — none produced the restricted relay. Next steps:")
     print(" - We may need to fully recover the plaintext P1 via a working padding-oracle (debug the oracle detection).")
     print(" - Or the original device isn't one of the 4, so the 4-try method fails.")
+</code></pre>
 
-```
 
-ذذذ
+{% if page.tags and page.tags != empty %}
+<hr>
+<div class="tags-inline">
+  {% for tag in page.tags %}
+    <a class="tag-pill" href="/tags/?t={{ tag | slugify }}">{{ tag }}</a>
+  {% endfor %}
+</div>
+{% endif %}
