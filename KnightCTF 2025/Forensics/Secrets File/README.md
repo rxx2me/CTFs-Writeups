@@ -1,9 +1,22 @@
-Name : 
+---
+title: "Secret File — Write-up"
+ctf: KnightCTF-2025    
+track: Forensics           
+layout: page
+permalink: /ctf/KnightCTF-2025/Forensics/Secrets-File
+date: 2025-01-21 12:00:00 +0300
+tags: [ctf, Knightctf, Forensics]
+---
+
+#Secret File
+
+
+
+**اسم التحدي :** 
 
 Secret File
 
-Des : 
-
+**وصف التحدي : **
 
 My friend's company's employees faced some attacks from hackers. Siam is a very close person to the company owner. Every employee knows that if Siam tells our CEO about anything, he can provide assistance without any hesitation. So, all employees made a statement, and here is the statement: "Triggers don't always require a spark. Sometimes, a simple change can set the stage for transformation. Where might such a trigger reside?" And guess what—the CEO granted him permission to hire an ethical hacker. So, he gave me that finding part. Are you able to help me with this issue?
 
@@ -17,68 +30,62 @@ Flag Format: KCTF{value_here} and replace space with underscore (_)
 username : siam 
 password : pmsiam
 
-Download file : 
+---
 
-![image](https://github.com/rxx2me/CTFs-Writeups/blob/main/KnightCTF%202025/Forensics/Secrets%20File/1.png?raw=true)
+## الشرح (Write-up)
 
-we have file : kali-linux-2024.ova
+**تحميل الملف:**
 
-and login whit username siam 
-but we dont have any "sudo Privilege"
+<img src="https://github.com/rxx2me/CTFs-Writeups/blob/main/KnightCTF%202025/Forensics/Secrets%20File/1.png?raw=true" alt="download" width="500">
 
-So I changed the root password using GRUB 
+لدينا ملف: `kali-linux-2024.ova`
 
-![image](https://github.com/rxx2me/CTFs-Writeups/blob/main/KnightCTF%202025/Forensics/Secrets%20File/2.png?raw=true)
+سجّل الدخول بحساب **siam**، لكن لا توجد لدينا **صلاحيات sudo**.
 
-```
-linux /boot/vmlinuz-6.11.2-amd64 root=UUID=... ro quiet splash init=/bin/bash
-```
-and 
-```
-$ mount -o remount,rw /
+لذلك قمتُ بتغيير كلمة مرور المستخدم **root** عبر **GRUB**:
+
+<pre><code>linux /boot/vmlinuz-6.11.2-amd64 root=UUID=... ro quiet splash init=/bin/bash
+</code></pre>
+
+ثم نفّذت الأوامر التالية:
+
+<pre><code>$ mount -o remount,rw /
 $ passwd
 $ root
 $ exec /sbin/init
-```
+</code></pre>
 
-Ok .. Login with " root " 
-and find 6 users 
+الان… سجّل الدخول الآن كمستخدم **root**، وستجد 6 مستخدمين:
 
-![image](https://github.com/rxx2me/CTFs-Writeups/blob/main/KnightCTF%202025/Forensics/Secrets%20File/3.png?raw=true) 
+<img src="https://github.com/rxx2me/CTFs-Writeups/blob/main/KnightCTF%202025/Forensics/Secrets%20File/3.png?raw=true" alt="users" width="500">
 
-we find 2 file in "/home/bob/Downloads"
+وجدنا ملفّين داخل المسار: `/home/bob/Downloads`
 
-![image](https://github.com/rxx2me/CTFs-Writeups/blob/main/KnightCTF%202025/Forensics/Secrets%20File/4.png?raw=true)
+<img src="https://github.com/rxx2me/CTFs-Writeups/blob/main/KnightCTF%202025/Forensics/Secrets%20File/4.png?raw=true" alt="bob-downloads-1" width="500">
 
+<img src="https://github.com/rxx2me/CTFs-Writeups/blob/main/KnightCTF%202025/Forensics/Secrets%20File/5.png?raw=true" alt="bob-downloads-2" width="500">
 
-![image](https://github.com/rxx2me/CTFs-Writeups/blob/main/KnightCTF%202025/Forensics/Secrets%20File/5.png?raw=true)
+حصلنا على تلميح كلمة مرور جزئية: **PartialPass: Null_**
 
+<img src="https://github.com/rxx2me/CTFs-Writeups/blob/main/KnightCTF%202025/Forensics/Secrets%20File/6.png?raw=true" alt="partial-pass" width="500">
 
+جرّبنا فك الضغط:
 
-ok we found : PartialPass: Null_
+<img src="https://github.com/rxx2me/CTFs-Writeups/blob/main/KnightCTF%202025/Forensics/Secrets%20File/7.png?raw=true" alt="unzip-try" width="500">
 
-![image](https://github.com/rxx2me/CTFs-Writeups/blob/main/KnightCTF%202025/Forensics/Secrets%20File/6.png?raw=true)
+ثم عثرنا على كلمة المرور الكاملة: **Null_V4luE_M3**
 
-and try to unzip it : 
+<img src="https://github.com/rxx2me/CTFs-Writeups/blob/main/KnightCTF%202025/Forensics/Secrets%20File/8.png?raw=true" alt="full-pass-1" width="500">
 
-![image](https://github.com/rxx2me/CTFs-Writeups/blob/main/KnightCTF%202025/Forensics/Secrets%20File/7.png?raw=true)
+<img src="https://github.com/rxx2me/CTFs-Writeups/blob/main/KnightCTF%202025/Forensics/Secrets%20File/9.png?raw=true" alt="full-pass-2" width="500">
 
-Ok Find Full password : Null_V4luE_M3
+**تم.**
 
-![image](https://github.com/rxx2me/CTFs-Writeups/blob/main/KnightCTF%202025/Forensics/Secrets%20File/8.png?raw=true)
-
-
-![image](https://github.com/rxx2me/CTFs-Writeups/blob/main/KnightCTF%202025/Forensics/Secrets%20File/9.png?raw=true)
-
-Done 
-
-
-
-
-
-
-
-
-
-
-
+{% if page.tags and page.tags != empty %}
+<hr>
+<div class="tags-inline">
+  {% for tag in page.tags %}
+    <a class="tag-pill" href="/tags/?t={{ tag | slugify }}">{{ tag }}</a>
+  {% endfor %}
+</div>
+{% endif %}
