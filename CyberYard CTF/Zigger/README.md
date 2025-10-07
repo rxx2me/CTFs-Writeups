@@ -101,3 +101,11 @@ if __name__ == "__main__":
 
 
 
+{% if page.tags and page.tags != empty %}
+<hr>
+<div class="tags-inline">
+  {% for tag in page.tags %}
+    <a class="tag-pill" href="/tags/?t={{ tag | slugify }}">{{ tag }}</a>
+  {% endfor %}
+</div>
+{% endif %}
