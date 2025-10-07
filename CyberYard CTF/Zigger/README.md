@@ -3,7 +3,7 @@ title: "Zigger — Write-up"
 ctf: cyberyard-ctf    
 track: Reversing           
 layout: page
-permalink: /ctf/cyberyard-ctf/web/zigger/
+permalink: /ctf/cyberyard-ctf/Reversing/zigger/
 date: 2025-10-06 12:00:00 +0300
 tags: [ctf, cyberyard, Reversing]
 ---
