@@ -8,13 +8,16 @@ date: 2024-11-30 12:00:00 +0300
 tags: [ctf, blackhat, Reversing]
 ---
 
-**سم التحدي :**  Save Files are Fun
+#Save Files are Fun
+
+**اسم التحدي :** Save Files are Fun
+
 **وصف التحدي:** none
+
 **الملف المرفق:** [map.wbox](https://github.com/rxx2me/CTFs-Writeups/raw/refs/heads/main/BlackHat%20MEA%20CTF%20Final%202024%20/Reverse/Save%20Files%20are%20Fun/map.wbox)
 
-
 **الملف:** `map.wbox` — وهو يخص لعبة **WorldBox.God.Simulator**.
-
+#
 **الخطوات:**
 
 1) افتح لعبة **WorldBox.God.Simulator**.
