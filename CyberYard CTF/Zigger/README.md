@@ -1,12 +1,12 @@
 ---
-title: "Zigger — Write-up"
-ctf: cyberyard-ctf    
-track: Reversing           
-layout: page
-permalink: /ctf/cyberyard-ctf/Reversing/zigger/
-date: 2025-10-04 12:00:00 +0300
-tags: [ctf, cyberyard, Reversing]
+layout: post
+title: "Cyberyard CTF — Zigger"
+date: 2025-10-04
+categories: [CTF, Reversing]    
+tags: [ctf, cyberyard, Reversing, zig]   
+published: true            
 ---
+
 
 # Zigger — Reversing (Zig)
 
